@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kukoon — May 2026 Report</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&amp;family=Work+Sans:wght@300;400;500;600;700&amp;family=Spline+Sans+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+
+/* ═══════════════════════════════════════════════
+   SHARED / TAB CHROME
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Work Sans', sans-serif;
+  background: #2B3A42;
+  min-height: 100vh;
+}
+
+/* Tab chrome */
+.tab-chrome {
+  background: #1e2d34;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab-logo {
+  font-family: 'DM Serif Text', serif;
+  color: rgba(255,255,255,0.9);
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  margin-right: 16px;
+  padding: 14px 0;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  padding-right: 20px;
+}
+
+.tab-logo span {
+  font-family: 'Spline Sans Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #5E8A96;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 14px 20px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover { color: rgba(255,255,255,0.8); }
+
+.tab-btn.active {
+  color: #fff;
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #5E8A96;
+}
+
+.tab-btn.active[data-tab="mkt"]::after { background: #C4805A; }
+.tab-btn.active[data-tab="com"]::after { background: #5E8A96; }
+
+.tab-period {
+  margin-left: auto;
+  font-family: 'Spline Sans Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  padding: 14px 0;
+}
+
+/* Panes */
+.pane { display: none; }
+.pane.active { display: block; }
+
+/* ═══════════════════════════════════════════════
+   MARKETING TAB CSS (scoped to #mkt-pane)
+═══════════════════════════════════════════════ */
+
+  :root{
+    --slate-dark:#2B3A42;--slate-mid:#4A6670;--slate-light:#7A9BAA;--slate-bg:#E8ECEE;--slate-card:#F4F7F8;
+    --white:#FFFFFF;--accent:#5C8FA0;--accent-warm:#C4805A;--green:#4A8C6F;--red:#A84444;
+    --green-light:#E8F5EE;--red-light:#F5E8E8;--border:#D0D9DC;
+    --text-primary:#2B3A42;--text-secondary:#4A6670;--text-muted:#7A9BAA;--ni:#8B6BAE;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  #mkt-pane {font-family:'Work Sans',sans-serif;background:#DDE3E6;color:var(--text-primary);font-size:14px;line-height:1.5;}
+
+  .report-header{background:var(--slate-dark);color:white;padding:40px 48px 36px;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--accent-warm);}
+  .header-left h1{font-family:'DM Serif Text',serif;font-size:32px;font-weight:400;line-height:1.1;color:white;}
+  .header-left .subtitle{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--slate-light);margin-top:6px;}
+  .header-right{text-align:right;}
+  .big-rev{font-family:'DM Serif Text',serif;font-size:42px;color:white;line-height:1;}
+  .rev-label{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--slate-light);margin-bottom:4px;}
+  .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.5px;font-family:'Spline Sans Mono',monospace;}
+  .pill-green{background:rgba(74,140,111,.25);color:#7DCCAA;}
+  .pill-red{background:rgba(168,68,68,.25);color:#E8928A;}
+  .pill-neutral{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);}
+  .pill-amber{background:rgba(196,128,90,.25);color:#E8AA78;}
+
+  .report-body{max-width:1200px;margin:0 auto;padding:32px 24px 60px;}
+  .section{margin-bottom:36px;}
+  .section-title{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  .cards-row{display:grid;gap:14px;}
+  .cards-4{grid-template-columns:repeat(4,1fr);}
+  .cards-3{grid-template-columns:repeat(3,1fr);}
+  .cards-2{grid-template-columns:repeat(2,1fr);}
+  .card{background:var(--white);border-radius:10px;padding:18px 20px;border:1px solid var(--border);}
+  .card-dark{background:var(--slate-dark);color:white;border-color:transparent;}
+  .card-red{background:#F5EDED;border-color:#E8C0C0;}
+  .card-label{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+  .card-dark .card-label{color:rgba(255,255,255,.55);}
+  .card-red .card-label{color:#A84444;}
+  .card-value{font-family:'DM Serif Text',serif;font-size:26px;color:var(--slate-dark);line-height:1.1;margin-bottom:4px;}
+  .card-dark .card-value{color:white;}
+  .card-red .card-value{color:var(--red);}
+  .card-sub{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .card-dark .card-sub{color:rgba(255,255,255,.6);}
+  .card-mom{font-size:11px;margin-top:5px;padding-top:5px;border-top:1px solid var(--border);color:var(--text-muted);}
+  .card-dark .card-mom{border-top-color:rgba(255,255,255,.15);}
+  .delta-up{color:var(--green);font-weight:600;}
+  .delta-dn{color:var(--red);font-weight:600;}
+  .delta-flat{color:var(--text-muted);font-weight:600;}
+
+  .wide-card{background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .wide-card-header{background:var(--slate-dark);color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
+  .wide-card-header h3{font-family:'DM Serif Text',serif;font-size:17px;font-weight:400;}
+  .wide-card-body{padding:20px;}
+
+  .mom-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:0;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .mom-cell{padding:16px 18px;border-right:1px solid var(--border);}
+  .mom-cell:last-child{border-right:none;}
+  .mom-label{font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+  .mom-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;}
+  .mom-period{font-size:10px;color:var(--text-muted);}
+  .mom-val{font-size:13px;font-weight:600;color:var(--text-primary);}
+  .mom-badge{display:inline-block;margin-top:6px;font-family:'Spline Sans Mono',monospace;font-size:11px;font-weight:600;padding:3px 8px;border-radius:12px;}
+  .mom-badge.up{background:var(--green-light);color:var(--green);}
+  .mom-badge.dn{background:var(--red-light);color:var(--red);}
+  .mom-badge.flat{background:var(--slate-bg);color:var(--text-muted);}
+
+  #mkt-pane table{width:100%;border-collapse:collapse;font-size:13px;}
+  #mkt-pane thead tr{background:var(--slate-bg);}
+  #mkt-pane thead th{font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:9px 12px;text-align:left;font-weight:500;border-bottom:1px solid var(--border);}
+  thead th.num{text-align:right;}
+  #mkt-pane tbody tr{border-bottom:1px solid var(--border);}
+  #mkt-pane tbody tr:last-child{border-bottom:none;}
+  #mkt-pane tbody tr:hover{background:var(--slate-card);}
+  #mkt-pane tbody td{padding:9px 12px;color:var(--text-primary);}
+  #mkt-pane tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  #mkt-pane tbody td.bold{font-weight:600;}
+  #mkt-pane tfoot tr{border-top:2px solid var(--slate-dark);}
+  #mkt-pane tfoot td{padding:10px 12px;font-weight:600;color:var(--slate-dark);font-size:13px;}
+  #mkt-pane tfoot td.num{text-align:right;}
+  .row-ni td{background:rgba(139,107,174,.07);}
+  .row-subtotal td{background:var(--slate-bg);font-weight:600;font-size:12px;color:var(--text-secondary);}
+  .row-subtotal td.num{text-align:right;}
+
+  .bar-chart{display:flex;flex-direction:column;gap:10px;}
+  .bar-row{display:flex;align-items:center;gap:12px;}
+  .bar-label{width:90px;font-size:12px;color:var(--text-secondary);text-align:right;flex-shrink:0;}
+  .bar-track{flex:1;height:20px;background:var(--slate-bg);border-radius:4px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:4px;}
+  .bar-value{width:80px;font-size:12px;font-weight:600;color:var(--text-primary);flex-shrink:0;}
+  .bar-pct{width:40px;font-size:11px;color:var(--text-muted);flex-shrink:0;text-align:right;}
+
+  .split-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .nc-rc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  .market3{display:grid;grid-template-columns:2fr 1px 1fr 1px 2fr;background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .m-divider{background:var(--border);}
+  .m-col{padding:20px 22px;}
+  .m-title{font-family:'DM Serif Text',serif;font-size:19px;color:var(--slate-dark);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+  .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .m-stat-lbl{font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+  .m-stat-val{font-size:15px;font-weight:600;color:var(--slate-dark);}
+  .m-stat-sub{font-size:11px;color:var(--text-muted);}
+  .ni-badge{background:rgba(139,107,174,.15);color:var(--ni);border:1px solid rgba(139,107,174,.3);padding:2px 8px;border-radius:10px;font-size:10px;font-family:'Spline Sans Mono',monospace;font-weight:600;}
+
+  .warn{background:#FDF5E6;border:1px solid #E8C87A;border-radius:8px;padding:10px 14px;font-size:12px;color:#7A5A1A;margin-top:10px;display:flex;gap:8px;align-items:flex-start;}
+  .info{background:#EEF4F7;border:1px solid #A8C4CE;border-radius:8px;padding:10px 14px;font-size:12px;color:#2B3A42;margin-top:10px;display:flex;gap:8px;align-items:flex-start;}
+  .alert{background:#F5EDED;border:1px solid #E8C0C0;border-radius:8px;padding:10px 14px;font-size:12px;color:#7A1A1A;margin-top:10px;display:flex;gap:8px;align-items:flex-start;}
+
+  /* PENDING PLACEHOLDER */
+  .pending-block{background:white;border:2px dashed var(--border);border-radius:10px;padding:40px 20px;text-align:center;}
+  .pending-block .pending-icon{font-size:32px;margin-bottom:12px;}
+  .pending-block .pending-title{font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);margin-bottom:6px;}
+  .pending-block .pending-sub{font-size:13px;color:var(--text-muted);}
+
+  .report-footer{background:var(--slate-dark);color:rgba(255,255,255,.4);text-align:center;padding:18px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+
+
+/* ═══════════════════════════════════════════════
+   COMMERCIAL TAB CSS (scoped to #com-pane)
+═══════════════════════════════════════════════ */
+
+  :root {
+    --slate: #2B3A42; --teal: #5E8A96; --teal-light: #eaf3f5;
+    --green: #2d7a52; --green-bg: #dff0e8;
+    --red: #b83232; --red-bg: #fce8e8;
+    --amber: #b86a00; --amber-bg: #fff0d8;
+    --border: #dce8eb; --muted: #7090a0; --bg: #f2f6f8; --white: #fff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  #com-pane { font-family: 'Work Sans', sans-serif; background: var(--bg); color: var(--slate); font-size: 13px; line-height: 1.55; }
+  h1, h2, h3 { font-family: 'DM Serif Text', serif; }
+
+  /* HEADER */
+  .header { background: var(--slate); padding: 28px 40px 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .header-left .eyebrow { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 7px; }
+  .header-left h1 { color: #fff; font-size: 27px; line-height: 1.1; }
+  .header-left .desc { color: #8db8c3; font-size: 12px; margin-top: 4px; }
+  .header-right { text-align: right; font-size: 11px; color: #8db8c3; line-height: 1.7; }
+  .header-right strong { color: var(--teal); display: block; font-size: 12px; }
+
+  /* BODY */
+  .body { max-width: 1120px; margin: 0 auto; padding: 26px 22px 40px; }
+  .section { margin-bottom: 28px; }
+  .section-title { font-family: 'DM Serif Text', serif; font-size: 17px; padding-bottom: 8px; border-bottom: 2px solid var(--teal); margin-bottom: 14px; }
+
+  /* KPI STRIP */
+  .kpi-strip { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 14px; margin-bottom: 26px; }
+  .kpi { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .kpi.primary { background: var(--slate); border-color: var(--slate); }
+  .kpi.missed { background: var(--red-bg); border-color: #e0b0b0; }
+  .kpi.beat { background: var(--green-bg); border-color: #a0d0b8; }
+  .kpi-lbl { font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  .kpi.primary .kpi-lbl { color: #8db8c3; }
+  .kpi.missed .kpi-lbl { color: #884040; }
+  .kpi.beat .kpi-lbl { color: #1a6040; }
+  .kpi-val { font-family: 'DM Serif Text', serif; font-size: 30px; line-height: 1; color: var(--slate); margin-bottom: 5px; }
+  .kpi.primary .kpi-val { color: #fff; }
+  .kpi.missed .kpi-val { color: var(--red); }
+  .kpi.beat .kpi-val { color: var(--green); }
+  .kpi-sub { font-size: 11.5px; color: var(--muted); }
+  .kpi.primary .kpi-sub { color: #8db8c3; }
+  .kpi.missed .kpi-sub { color: #884040; }
+  .kpi.beat .kpi-sub { color: #1a6040; }
+  .up { color: var(--green); font-weight: 600; }
+  .dn { color: var(--red); font-weight: 600; }
+
+  /* TARGET PERFORMANCE CARDS */
+  .tgt-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 14px; }
+  .tgt-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 14px 12px; }
+  .tgt-card.beat { border-top: 3px solid var(--green); }
+  .tgt-card.miss { border-top: 3px solid var(--red); }
+  .tgt-channel { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .tgt-actual { font-family: 'DM Serif Text', serif; font-size: 18px; color: var(--slate); line-height: 1; margin-bottom: 2px; }
+  .tgt-target { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .tgt-pct { font-size: 13px; font-weight: 700; }
+  .tgt-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 7px; }
+  .tgt-bar-fill { height: 100%; border-radius: 2px; }
+
+  /* TABLES */
+  #com-pane table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  #com-pane thead th { background: var(--slate); color: #fff; padding: 10px 12px; font-size: 11px; font-weight: 500; text-align: right; white-space: nowrap; }
+  thead th:first-child { text-align: left; }
+  #com-pane tbody td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--border); font-size: 12px; }
+  #com-pane tbody td:first-child { text-align: left; font-weight: 500; font-size: 12.5px; }
+  #com-pane tbody tr:last-child td { border-bottom: none; }
+  #com-pane .sub-row td { color: #6898a8; font-size: 11.5px; }
+  #com-pane .sub-row td:first-child { padding-left: 24px; font-weight: 400; }
+  #com-pane .total-row td { font-weight: 700; background: var(--teal-light); border-top: 2px solid var(--teal); font-size: 13px; }
+  #com-pane .ecomm-row td { background: #f8fbfc; border-top: 1px solid var(--border); font-weight: 600; font-size: 12.5px; }
+  #com-pane .tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+  #com-pane .tag.up { background: var(--green-bg); color: var(--green); }
+  #com-pane .tag.dn { background: var(--red-bg); color: var(--red); }
+  #com-pane .tag.neutral { background: #e4ecf0; color: var(--muted); }
+  #com-pane .note { font-size: 10.5px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+  /* CHART */
+  .chart-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+
+  /* INSIGHTS */
+  .insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .insight { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: 0 8px 8px 0; padding: 14px 16px; }
+  .insight.warn { border-left-color: var(--amber); }
+  .insight.pos { border-left-color: var(--green); }
+  .insight.neg { border-left-color: var(--red); }
+  .insight-title { font-weight: 700; font-size: 12px; margin-bottom: 5px; }
+  .insight-body { font-size: 11.5px; color: #4e6e7a; line-height: 1.55; }
+
+  /* STORES */
+  .store-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .store-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .store-lbl { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .store-val { font-family: 'DM Serif Text', serif; font-size: 24px; margin-bottom: 3px; }
+  .store-sub { font-size: 11px; color: var(--muted); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .footer { text-align: center; padding-top: 20px; font-size: 10px; color: var(--muted); letter-spacing: 0.5px; }
+
+
+/* Shared overrides */
+#mkt-pane { background: #DDE3E6; min-height: calc(100vh - 49px); color: #2B3A42; font-size: 14px; line-height: 1.5; }
+#com-pane { background: #f2f6f8; min-height: calc(100vh - 49px); color: #2B3A42; font-size: 13px; line-height: 1.55; }
+#com-pane h1, #com-pane h2, #com-pane h3 { font-family: 'DM Serif Text', serif; }
+
+</style>
+</head>
+<body>
+<!-- TAB CHROME -->
+<nav class="tab-chrome">
+<div class="tab-logo"><span>Kukoon Rugs</span>May 2026</div>
+<button class="tab-btn active" data-tab="mkt" onclick="switchTab('mkt')">📊  Marketing</button>
+<button class="tab-btn" data-tab="com" onclick="switchTab('com')">💷  Commercial</button>
+<div class="tab-period">Monthly Report  ·  01 – 31 May 2026</div>
+</nav>
+<!-- MARKETING PANE -->
+<div class="pane active" id="mkt-pane">
+<div class="report-header">
+<div class="header-left">
+<div class="subtitle">kukoon — digital performance</div>
+<h1>May 2026<br/>Monthly Report</h1>
+</div>
+<div class="header-right">
+<div class="rev-label">Web Revenue (inc. returns)</div>
+<div class="big-rev">£1,098,004</div>
+<div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;">
+<span class="pill pill-red">▼ −12% vs target</span>
+<span class="pill pill-green">▲ +48% YoY</span>
+<span class="pill pill-neutral">Target: £1,249,920</span>
+<span class="pill pill-neutral">Apr: £1,180,915 · ▼−7.0% MoM</span>
+</div>
+</div>
+</div>
+<div class="report-body">
+<!-- MOM SNAPSHOT -->
+<div class="section">
+<div class="section-title">Month-on-Month — April vs May 2026</div>
+<div class="mom-strip" style="margin-bottom:14px;">
+<div class="mom-cell">
+<div class="mom-label">Revenue (inc returns)</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">£1,180,915</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">£1,098,004</span></div>
+<div><span class="mom-badge dn">▼ −7.0%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Revenue (exc returns)</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">£1,000,590</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">£933,618</span></div>
+<div><span class="mom-badge dn">▼ −6.7%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Transactions</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">7,394</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">6,962</span></div>
+<div><span class="mom-badge dn">▼ −5.8%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Blended ROAS</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">4.41×</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">3.55×</span></div>
+<div><span class="mom-badge dn">▼ −19.5%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Returns Rate</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">15.3%</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">13.6%</span></div>
+<div><span class="mom-badge up">▲ Improved</span></div>
+</div>
+</div>
+<div class="mom-strip">
+<div class="mom-cell">
+<div class="mom-label">AOV</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">£159.40</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">£151.79</span></div>
+<div><span class="mom-badge dn">▼ −4.8%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Conversion Rate</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">1.03%</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">0.95%</span></div>
+<div><span class="mom-badge dn">▼ −0.08pp</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Total Ad Spend</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">£267,634</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">£297,899</span></div>
+<div><span class="mom-badge dn">▼ +11.3%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">CPA</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">£36.20</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">£42.79</span></div>
+<div><span class="mom-badge dn">▼ +18.2%</span></div>
+</div>
+<div class="mom-cell">
+<div class="mom-label">Sessions</div>
+<div class="mom-row"><span class="mom-period">Apr</span><span class="mom-val">683,885</span></div>
+<div class="mom-row"><span class="mom-period">May</span><span class="mom-val">700,947</span></div>
+<div><span class="mom-badge up">▲ +2.5%</span></div>
+</div>
+</div>
+
+</div>
+<!-- WEB PERFORMANCE -->
+<div class="section">
+<div class="section-title">Web Performance — May 2026</div>
+<div class="cards-row cards-4" style="margin-bottom:14px;">
+<div class="card card-dark">
+<div class="card-label">Revenue exc. Returns</div>
+<div class="card-value">£933,618</div>
+<div class="card-sub">Returns: £143,616 · 13.6%</div>
+<div class="card-mom">Apr: £1,000,590  <span class="delta-dn">▼ −6.7%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Transactions</div>
+<div class="card-value">6,962</div>
+<div class="card-sub"><span class="delta-up">▲ +28% YoY</span> (May 2025: 5,442)</div>
+<div class="card-mom">Apr: 7,394  <span class="delta-dn">▼ −5.8%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Average Order Value</div>
+<div class="card-value">£151.79</div>
+<div class="card-sub"><span class="delta-up">▲ +11% YoY</span> (May 2025: £136.26)</div>
+<div class="card-mom">Apr: £159.40  <span class="delta-dn">▼ −4.8%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Sessions</div>
+<div class="card-value">700,947</div>
+<div class="card-sub"><span class="delta-up">▲ +99% YoY</span> (May 2025: 352,913)</div>
+<div class="card-mom">Apr: 683,885  <span class="delta-up">▲ +2.5%</span></div>
+</div>
+</div>
+<div class="cards-row cards-4">
+<div class="card card-red">
+<div class="card-label">vs Target</div>
+<div class="card-value">−£151,916</div>
+<div class="card-sub">Target: £1,249,920 · missed by 12%</div>
+<div class="card-mom">Apr: beat target by +£66,515</div>
+</div>
+<div class="card">
+<div class="card-label">Conversion Rate</div>
+<div class="card-value">0.95%</div>
+<div class="card-sub"><span class="delta-dn">▼ −0.53pp YoY</span> (May 2025: 1.48%)</div>
+<div class="card-mom">Apr: 1.03%  <span class="delta-dn">▼ −0.08pp</span></div>
+</div>
+<div class="card">
+<div class="card-label">Blended ROAS / MER</div>
+<div class="card-value">3.55×</div>
+<div class="card-sub">£1.10M ÷ £297,899 spend</div>
+<div class="card-mom">Apr: 4.41×  <span class="delta-dn">▼ −19.5%</span></div>
+</div>
+<div class="card">
+<div class="card-label">CPA</div>
+<div class="card-value">£42.79</div>
+<div class="card-sub">Spend ÷ Transactions</div>
+<div class="card-mom">Apr: £36.20  <span class="delta-dn">▼ +18.2%</span></div>
+</div>
+</div>
+
+
+</div>
+<!-- MARKET SPLIT -->
+<div class="section">
+<div class="section-title">Market Split — GB · Northern Ireland · Ireland</div>
+<div class="market3">
+<div class="m-col">
+<div class="m-title">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Great Britain <span class="pill pill-neutral" style="background:#E8ECEE;color:#4A6670;font-size:10px;">47.8% of revenue</span></div>
+<div class="m-grid">
+<div>
+<div class="m-stat-lbl">Revenue (gross)</div>
+<div class="m-stat-val">£500,251</div>
+<div class="m-stat-sub">Eng £417k · Sco £60k · Wal £23k</div>
+</div>
+<div>
+<div class="m-stat-lbl">Orders</div>
+<div class="m-stat-val">3,158</div>
+<div class="m-stat-sub">Eng 2,623 · Sco 388 · Wal 147</div>
+</div>
+<div>
+<div class="m-stat-lbl">Avg AOV</div>
+<div class="m-stat-val">~£135</div>
+</div>
+<div>
+<div class="m-stat-lbl">Returns</div>
+<div class="m-stat-val">£63,116</div>
+<div class="m-stat-sub">Eng £55k · Sco £5k · Wal £3k</div>
+</div>
+</div>
+</div>
+<div class="m-divider"></div>
+<div class="m-col" style="background:rgba(139,107,174,.04);">
+<div class="m-title" style="color:var(--ni);">🏴 Northern Ireland <span class="ni-badge">Broken out</span></div>
+<div class="m-grid">
+<div>
+<div class="m-stat-lbl">Revenue (gross)</div>
+<div class="m-stat-val" style="color:var(--ni);">£117,615</div>
+<div class="m-stat-sub">10.7% of total</div>
+</div>
+<div>
+<div class="m-stat-lbl">Orders</div>
+<div class="m-stat-val">779</div>
+</div>
+<div>
+<div class="m-stat-lbl">AOV</div>
+<div class="m-stat-val">£130.91</div>
+</div>
+<div>
+<div class="m-stat-lbl">Returns</div>
+<div class="m-stat-val" style="color:var(--red);">£22,758</div>
+<div class="m-stat-sub" style="color:var(--red);">Rate: 19.3% ⚠</div>
+</div>
+</div>
+</div>
+<div class="m-divider"></div>
+<div class="m-col">
+<div class="m-title">🇮🇪 Ireland <span class="pill pill-neutral" style="background:#E8ECEE;color:#4A6670;font-size:10px;">43.7% of revenue</span></div>
+<div class="m-grid">
+<div>
+<div class="m-stat-lbl">Revenue (gross)</div>
+<div class="m-stat-val">£480,027</div>
+<div class="m-stat-sub" style="color:var(--red);">Apr: £533,515 · ▼−10.0% MoM</div>
+</div>
+<div>
+<div class="m-stat-lbl">Sessions</div>
+<div class="m-stat-val">248,416</div>
+<div class="m-stat-sub">35.8% of all sessions</div>
+</div>
+<div>
+<div class="m-stat-lbl">Conversion Rate</div>
+<div class="m-stat-val" style="color:var(--green);">1.18%</div>
+<div class="m-stat-sub">UK (inc NI): 0.83%</div>
+</div>
+<div>
+<div class="m-stat-lbl">Returns</div>
+<div class="m-stat-val">£58,433</div>
+<div class="m-stat-sub">Rate: 12.2%</div>
+</div>
+</div>
+</div>
+</div>
+<!-- REGIONAL TABLE -->
+<div style="margin-top:14px;">
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>Full Regional Breakdown — May 2026</h3>
+<span style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(255,255,255,.6);">Revenue = Total Sales + |Returns| (gross)</span>
+</div>
+<div class="wide-card-body" style="padding:0;">
+<table>
+<thead>
+<tr><th>Region</th><th class="num">Revenue (gross)</th><th class="num">Orders</th><th class="num">AOV</th><th class="num">Returns</th><th class="num">Returns %</th><th class="num">MoM Revenue</th></tr>
+</thead>
+<tbody>
+<tr><td class="bold">England</td><td class="num">£417,242</td><td class="num">2,623</td><td class="num">£136.17</td><td class="num">£55,214</td><td class="num">13.2%</td><td class="num"><span class="delta-dn">▼ −3.9%</span></td></tr>
+<tr><td class="bold">Scotland</td><td class="num">£60,247</td><td class="num">388</td><td class="num">£132.02</td><td class="num">£5,088</td><td class="num">8.4%</td><td class="num"><span class="delta-dn">▼ −8.9%</span></td></tr>
+<tr><td class="bold">Wales</td><td class="num">£22,761</td><td class="num">147</td><td class="num">£130.67</td><td class="num">£2,814</td><td class="num">12.4%</td><td class="num"><span class="delta-dn">▼ −13.8%</span></td></tr>
+<tr class="row-subtotal"><td>GB Subtotal</td><td class="num">£500,251</td><td class="num">3,158</td><td class="num">£135.17</td><td class="num">£63,116</td><td class="num">12.6%</td><td class="num"><span class="delta-dn">▼ −4.8%</span></td></tr>
+<tr class="row-ni">
+<td class="bold" style="color:var(--ni);">🏴 Northern Ireland  <span class="ni-badge">Broken out</span></td>
+<td class="num bold" style="color:var(--ni);">£117,615</td><td class="num">779</td><td class="num">£130.91</td>
+<td class="num" style="color:var(--red);font-weight:600;">£22,758</td>
+<td class="num" style="color:var(--red);font-weight:600;">19.3%</td>
+<td class="num"><span class="delta-dn">▼ −4.1%</span></td>
+</tr>
+<tr class="row-subtotal"><td>UK Total (GB + NI)</td><td class="num">£617,866</td><td class="num">3,937</td><td class="num">£134.34</td><td class="num">£85,874</td><td class="num">13.9%</td><td class="num"><span class="delta-dn">▼ −4.7%</span></td></tr>
+<tr><td class="bold">Dublin</td><td class="num">£123,816</td><td class="num">785</td><td class="num">£132.05</td><td class="num">£17,726</td><td class="num">14.3%</td><td class="num"><span class="delta-dn">▼ −6.1%</span></td></tr>
+<tr><td class="bold">Cork</td><td class="num">£66,447</td><td class="num">429</td><td class="num">£128.74</td><td class="num">£7,739</td><td class="num">11.6%</td><td class="num"><span class="delta-dn">▼ −8.5%</span></td></tr>
+<tr><td class="bold">Kildare</td><td class="num">£36,200</td><td class="num">204</td><td class="num">£146.76</td><td class="num">£3,243</td><td class="num">9.0%</td><td class="num"><span class="delta-up">▲ +3.8%</span></td></tr>
+<tr><td class="bold">Galway</td><td class="num">£27,147</td><td class="num">154</td><td class="num">£146.02</td><td class="num">£2,981</td><td class="num">11.0%</td><td class="num"><span class="delta-dn">▼ −8.9%</span></td></tr>
+<tr><td class="bold">Meath</td><td class="num">£21,530</td><td class="num">141</td><td class="num">£127.42</td><td class="num">£3,456</td><td class="num">16.1%</td><td class="num"><span class="delta-dn">▼ −7.7%</span></td></tr>
+<tr><td class="bold">Wicklow</td><td class="num">£17,029</td><td class="num">114</td><td class="num">£124.52</td><td class="num">£2,402</td><td class="num">14.1%</td><td class="num"><span class="delta-dn">▼ −30.0%</span></td></tr>
+<tr><td class="bold">Louth</td><td class="num">£14,748</td><td class="num">80</td><td class="num">£155.68</td><td class="num">£2,341</td><td class="num">15.9%</td><td class="num"><span class="delta-dn">▼ −11.8%</span></td></tr>
+<tr><td class="bold">Tipperary</td><td class="num">£14,513</td><td class="num">98</td><td class="num">£120.60</td><td class="num">£1,106</td><td class="num">7.6%</td><td class="num"><span class="delta-dn">▼ −14.0%</span></td></tr>
+<tr><td class="bold">Clare</td><td class="num">£14,408</td><td class="num">91</td><td class="num">£132.18</td><td class="num">£2,437</td><td class="num">16.9%</td><td class="num"><span class="delta-dn">▼ −1.9%</span></td></tr>
+<tr><td class="bold">Kerry</td><td class="num">£15,136</td><td class="num">99</td><td class="num">£125.95</td><td class="num">£1,216</td><td class="num">8.0%</td><td class="num"><span class="delta-dn">▼ −6.8%</span></td></tr>
+<tr><td class="bold">Limerick</td><td class="num">£16,196</td><td class="num">119</td><td class="num">£113.17</td><td class="num">£1,812</td><td class="num">11.2%</td><td class="num"><span class="delta-dn">▼ −19.0%</span></td></tr>
+<tr><td class="bold">Waterford</td><td class="num">£13,455</td><td class="num">89</td><td class="num">£126.55</td><td class="num">£2,172</td><td class="num">16.1%</td><td class="num"><span class="delta-up">▲ +26.6%</span></td></tr>
+<tr><td class="bold">Donegal</td><td class="num">£13,767</td><td class="num">90</td><td class="num">£130.01</td><td class="num">£2,638</td><td class="num">19.2%</td><td class="num"><span class="delta-dn">▼ −42.9%</span></td></tr>
+<tr><td class="bold">Wexford</td><td class="num">£12,756</td><td class="num">86</td><td class="num">£122.09</td><td class="num">£663</td><td class="num">5.2%</td><td class="num"><span class="delta-flat">→ Flat</span></td></tr>
+<tr><td class="bold">Mayo</td><td class="num">£12,674</td><td class="num">82</td><td class="num">£127.91</td><td class="num">£1,579</td><td class="num">12.5%</td><td class="num"><span class="delta-up">▲ +0.2%</span></td></tr>
+<tr><td class="bold">Kilkenny</td><td class="num">£10,135</td><td class="num">59</td><td class="num">£141.99</td><td class="num">£885</td><td class="num">8.7%</td><td class="num"><span class="delta-up">▲ +9.1%</span></td></tr>
+<tr><td class="bold">Laois</td><td class="num">£8,780</td><td class="num">53</td><td class="num">£137.04</td><td class="num">£602</td><td class="num">6.9%</td><td class="num"><span class="delta-flat">→ Flat</span></td></tr>
+<tr><td class="bold">Sligo</td><td class="num">£7,197</td><td class="num">38</td><td class="num">£157.23</td><td class="num">£826</td><td class="num">11.5%</td><td class="num"><span class="delta-up">▲ +5.8%</span></td></tr>
+<tr><td class="bold">Cavan</td><td class="num">£6,695</td><td class="num">40</td><td class="num">£139.50</td><td class="num">£706</td><td class="num">10.5%</td><td class="num"><span class="delta-dn">▼ −1.7%</span></td></tr>
+<tr><td class="bold">Roscommon</td><td class="num">£6,445</td><td class="num">37</td><td class="num">£143.79</td><td class="num">£440</td><td class="num">6.8%</td><td class="num"><span class="delta-dn">▼ −4.8%</span></td></tr>
+<tr><td class="bold">Westmeath</td><td class="num">£4,921</td><td class="num">30</td><td class="num">£134.42</td><td class="num">£155</td><td class="num">3.2%</td><td class="num"><span class="delta-dn">▼ −43.8%</span></td></tr>
+<tr><td class="bold">Offaly</td><td class="num">£4,244</td><td class="num">28</td><td class="num">£126.00</td><td class="num">£430</td><td class="num">10.1%</td><td class="num"><span class="delta-dn">▼ −26.9%</span></td></tr>
+<tr><td class="bold">Monaghan</td><td class="num">£4,103</td><td class="num">25</td><td class="num">£134.84</td><td class="num">£191</td><td class="num">4.6%</td><td class="num"><span class="delta-dn">▼ −29.1%</span></td></tr>
+<tr><td class="bold">Carlow</td><td class="num">£3,557</td><td class="num">22</td><td class="num">£134.44</td><td class="num">£340</td><td class="num">9.5%</td><td class="num"><span class="delta-dn">▼ −35.7%</span></td></tr>
+<tr><td class="bold">Leitrim</td><td class="num">£3,193</td><td class="num">20</td><td class="num">£132.75</td><td class="num">£298</td><td class="num">9.3%</td><td class="num"><span class="delta-dn">▼ −6.5%</span></td></tr>
+<tr><td class="bold">Longford</td><td class="num">£935</td><td class="num">9</td><td class="num">£85.62</td><td class="num">£51</td><td class="num">5.5%</td><td class="num"><span class="delta-dn">▼ −71.0%</span></td></tr>
+<tr class="row-subtotal"><td>Ireland Total</td><td class="num">£480,027</td><td class="num">2,817</td><td class="num">£133.10</td><td class="num">£58,433</td><td class="num">12.2%</td><td class="num"><span class="delta-dn">▼ −10.0%</span></td></tr>
+</tbody>
+<tfoot>
+<tr><td class="bold">Grand Total</td><td class="num bold">£1,097,893</td><td class="num bold">6,754</td><td class="num bold">—</td><td class="num bold">£144,307</td><td class="num bold">13.1%</td><td class="num bold"><span class="delta-dn">▼ −7.1%</span></td></tr>
+</tfoot>
+</table>
+</div>
+</div>
+</div>
+
+
+</div>
+<!-- NEW vs RETURNING -->
+<div class="section">
+<div class="section-title">Customer Type Split</div>
+<div class="nc-rc-grid">
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>🆕 New Customers</h3>
+<span class="pill pill-neutral" style="background:rgba(255,255,255,.15);">4,850 orders · 69.7%</span>
+</div>
+<div class="wide-card-body">
+<div class="cards-row cards-3">
+<div>
+<div class="card-label">Revenue</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">£827,339</div>
+<div style="font-size:12px;color:var(--text-muted);">78.3% of total</div>
+<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Apr: £879,676  <span class="delta-dn">▼ −5.9%</span></div>
+</div>
+<div>
+<div class="card-label">AOV · NC ROAS</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">£171</div>
+<div style="font-size:12px;color:var(--text-muted);">NC ROAS: 2.78×</div>
+<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Apr: £172  <span class="delta-dn">▼ −0.6%</span></div>
+</div>
+<div>
+<div class="card-label">CAC</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--accent-warm);">£61</div>
+<div style="font-size:12px;color:var(--text-muted);">Cost to acquire</div>
+<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Apr: £52  <span class="delta-dn">▼ +£9 (+17%)</span></div>
+</div>
+</div>
+</div>
+</div>
+<div class="wide-card">
+<div class="wide-card-header" style="background:var(--slate-mid);">
+<h3>🔁 Returning Customers</h3>
+<span class="pill pill-neutral" style="background:rgba(255,255,255,.15);">2,129 orders · 30.6%</span>
+</div>
+<div class="wide-card-body">
+<div class="cards-row cards-3">
+<div>
+<div class="card-label">Revenue</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">£301,991</div>
+<div style="font-size:12px;color:var(--text-muted);">28.6% of total</div>
+<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Apr: £340,473  <span class="delta-dn">▼ −11.3%</span></div>
+</div>
+<div>
+<div class="card-label">AOV</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">£142</div>
+<div style="font-size:12px;color:var(--text-muted);">£29 below new AOV</div>
+<div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Apr: £146  <span class="delta-dn">▼ −2.7%</span></div>
+</div>
+<div>
+<div class="card-label">CAC</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--green);">£0</div>
+<div style="font-size:12px;color:var(--text-muted);">Owned channel return</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<!-- PAID MEDIA -->
+<div class="section">
+<div class="section-title">Paid Media — Channel Spend</div>
+<div class="split-row">
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>May Allocation</h3>
+<span style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(255,255,255,.6);">Total: £297,899</span>
+</div>
+<div class="wide-card-body">
+<div class="bar-chart">
+<div class="bar-row"><div class="bar-label">Meta</div><div class="bar-track"><div class="bar-fill" style="width:44.4%;background:var(--slate-dark);"></div></div><div class="bar-value">£132,473</div><div class="bar-pct">44.4%</div></div>
+<div class="bar-row"><div class="bar-label">Google</div><div class="bar-track"><div class="bar-fill" style="width:33.6%;background:var(--accent);"></div></div><div class="bar-value">£100,154</div><div class="bar-pct">33.6%</div></div>
+<div class="bar-row"><div class="bar-label">TikTok</div><div class="bar-track"><div class="bar-fill" style="width:14.0%;background:var(--accent-warm);"></div></div><div class="bar-value">£41,659</div><div class="bar-pct">14.0%</div></div>
+<div class="bar-row"><div class="bar-label">Pinterest</div><div class="bar-track"><div class="bar-fill" style="width:6.6%;background:var(--slate-light);"></div></div><div class="bar-value">£19,703</div><div class="bar-pct">6.6%</div></div>
+<div class="bar-row"><div class="bar-label">Microsoft</div><div class="bar-track"><div class="bar-fill" style="width:1.3%;background:#BDCDD4;"></div></div><div class="bar-value">£3,911</div><div class="bar-pct">1.3%</div></div>
+</div>
+</div>
+</div>
+<div class="wide-card">
+<div class="wide-card-header"><h3>MoM Channel Comparison</h3></div>
+<div class="wide-card-body" style="padding:0;">
+<table>
+<thead><tr><th>Channel</th><th class="num">Apr 2026</th><th class="num">May 2026</th><th class="num">MoM</th><th class="num">3-Month Trend</th></tr></thead>
+<tbody>
+<tr><td class="bold">Meta / Facebook</td><td class="num">£133,053</td><td class="num">£132,473</td><td class="num"><span class="delta-flat">−0.4%</span></td><td class="num" style="font-size:11px;color:var(--text-muted);">Mar £131,762 · stable</td></tr>
+<tr><td class="bold">Google</td><td class="num">£103,657</td><td class="num">£100,154</td><td class="num"><span class="delta-up">▲ −3.4%</span></td><td class="num" style="font-size:11px;color:var(--text-muted);">Mar £113,296 · trending down</td></tr>
+<tr><td class="bold">TikTok</td><td class="num">£21,476</td><td class="num">£41,659</td><td class="num"><span class="delta-dn">▼ +94%</span></td><td class="num" style="font-size:11px;color:var(--red);">Mar £10,913 · ×4 in 3 months</td></tr>
+<tr><td class="bold">Pinterest</td><td class="num">£5,712</td><td class="num">£19,703</td><td class="num"><span class="delta-dn">▼ +245%</span></td><td class="num" style="font-size:11px;color:var(--red);">Mar £0 · new &amp; scaling fast</td></tr>
+<tr><td class="bold">Microsoft</td><td class="num">£2,957</td><td class="num">£3,911</td><td class="num"><span class="delta-dn">▼ +32%</span></td><td class="num" style="font-size:11px;color:var(--text-muted);">Mar £6,621 · volatile</td></tr>
+</tbody>
+<tfoot><tr><td class="bold">Total</td><td class="num bold">£267,634</td><td class="num bold">£297,899</td><td class="num bold"><span class="delta-dn">▼ +11.3%</span></td><td class="num bold" style="font-size:11px;">Mar £262,592 · rising</td></tr></tfoot>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+<!-- KLAVIYO -->
+<div class="section">
+<div class="section-title">Klaviyo — Email &amp; Owned Channels</div>
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>Attributed Conversions — May 2026</h3>
+<span class="pill pill-neutral" style="background:rgba(255,255,255,.15);">▲ +1.20% vs previous period</span>
+</div>
+<div class="wide-card-body">
+<div class="cards-row cards-3" style="margin-bottom:20px;">
+<div class="card card-dark">
+<div class="card-label">Total Attributed Revenue</div>
+<div class="card-value">£260,557</div>
+<div class="card-sub">Placed Order metric · Shopify</div>
+<div class="card-mom">Apr: £257,477  <span class="delta-up">▲ +1.2% MoM</span></div>
+</div>
+<div class="card">
+<div class="card-label">Campaigns</div>
+<div class="card-value">£93,132</div>
+<div class="card-sub">36% of Klaviyo total</div>
+<div class="card-mom">Apr: £108,193 (42%)  <span class="delta-dn">▼ −13.9%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Flows</div>
+<div class="card-value">£167,425</div>
+<div class="card-sub">64% · always-on automation</div>
+<div class="card-mom">Apr: £149,284 (58%)  <span class="delta-up">▲ +12.1%</span></div>
+</div>
+</div>
+<div class="klav-bar">
+<div class="klav-seg" style="width:64%;background:var(--green);">FLOWS 64%</div>
+<div class="klav-seg" style="width:36%;background:var(--accent);">CAMPAIGNS 36%</div>
+</div>
+<div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Flows reached their highest share yet (64%) as campaign revenue fell −13.9% MoM. A notable spike around May 13–14 drove the chart peak — likely aligned with a specific campaign send. Overall growth rate slowed significantly vs April (+1.20% vs +13.89%).</div>
+<!-- SUBSCRIBER GROWTH -->
+<div style="border-top:1px solid var(--border);padding-top:16px;">
+<div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Email Subscriber Growth — May 2026</div>
+<div class="cards-row cards-4">
+<div class="card" style="background:var(--slate-bg);">
+<div class="card-label">Total Subscribers</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">222,047</div>
+<div style="font-size:12px;color:var(--green);font-weight:600;">▲ +0.30% vs prev period</div>
+</div>
+<div class="card" style="background:var(--slate-bg);">
+<div class="card-label">New Subscribers</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">15,624</div>
+<div style="font-size:12px;color:var(--red);font-weight:600;">▼ −10.68% vs prev period</div>
+</div>
+<div class="card" style="background:var(--slate-bg);">
+<div class="card-label">Exclusions</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--slate-dark);">14,962</div>
+<div style="font-size:12px;color:var(--green);font-weight:600;">▼ −54.14% vs prev period</div>
+</div>
+<div class="card" style="background:var(--slate-bg);">
+<div class="card-label">Net List Growth</div>
+<div style="font-family:'DM Serif Text',serif;font-size:22px;color:var(--accent-warm);">+662</div>
+<div style="font-size:12px;color:var(--text-muted);">New subs minus exclusions</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<!-- INFLUENCER -->
+<div class="section">
+<div class="section-title">Paid Influencer — May 2026</div>
+<div class="split-row" style="margin-bottom:14px;">
+<div class="wide-card" style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+<div style="background:linear-gradient(135deg,#2B3A42,#4A6670);padding:14px 20px;color:white;display:flex;justify-content:space-between;align-items:flex-start;">
+<div>
+<div style="font-family:'DM Serif Text',serif;font-size:18px;font-weight:400;">Louise Cooney</div>
+<div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">@louisecooney_ · IRE · 23 The Agency</div>
+</div>
+<span class="pill pill-red">ROAS 1.85×</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);padding:16px 20px;gap:12px;">
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Overall Cost</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);">£8,388</div></div>
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Whitelisting Rev</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);">£6,700</div></div>
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Whitelisting Spend</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);">£3,617</div></div>
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Actual Revenue</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--red);">−£1,688</div></div>
+</div>
+<div style="padding:10px 20px 14px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;">
+<span style="background:var(--slate-bg);padding:2px 8px;border-radius:10px;font-size:10px;font-family:'Spline Sans Mono',monospace;color:var(--text-secondary);">Posted: 04/05/2026</span>
+<span style="background:var(--slate-bg);padding:2px 8px;border-radius:10px;font-size:10px;font-family:'Spline Sans Mono',monospace;color:var(--text-secondary);">Window: to 03/06/2026</span>
+<span style="color:var(--red);">⚠ Actual revenue is negative — campaign has not yet recovered its cost. Monitor through end of whitelisting window (3 Jun).</span>
+</div>
+</div>
+<div class="wide-card" style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+<div style="background:linear-gradient(135deg,#3D5060,#5C7A88);padding:14px 20px;color:white;display:flex;justify-content:space-between;align-items:flex-start;">
+<div>
+<div style="font-family:'DM Serif Text',serif;font-size:18px;font-weight:400;">Emily Norris</div>
+<div style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">@mrsemilynorris · UK · Self-managed</div>
+</div>
+<span class="pill pill-neutral" style="background:rgba(255,255,255,.15);">ROAS 2.09× (early)</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);padding:16px 20px;gap:12px;">
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Whitelisting Rev</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);">£1,437</div></div>
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Whitelisting Spend</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);">£689</div></div>
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">ROAS</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--slate-dark);">2.09×</div></div>
+<div><div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Actual Revenue</div><div style="font-family:'DM Serif Text',serif;font-size:18px;color:var(--text-muted);">Pending</div></div>
+</div>
+<div style="padding:10px 20px 14px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;">
+<span style="background:var(--slate-bg);padding:2px 8px;border-radius:10px;font-size:10px;font-family:'Spline Sans Mono',monospace;color:var(--text-secondary);">Whitelisted: 25/05/2026</span>
+<span style="background:var(--slate-bg);padding:2px 8px;border-radius:10px;font-size:10px;font-family:'Spline Sans Mono',monospace;color:var(--text-secondary);">Window: to 24/06/2026</span>
+<span style="color:var(--accent-warm);">⏳ Attribution window open — review at June close.</span>
+</div>
+</div>
+</div>
+
+</div>
+<!-- ORGANIC SOCIAL -->
+<div class="section">
+<div class="section-title">Organic Social — May 2026</div>
+<!-- INSTAGRAM -->
+<div style="margin-bottom:14px;">
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>Instagram — 30 posts</h3>
+<span class="pill pill-green">▲ +10.7% views MoM</span>
+</div>
+<div class="wide-card-body">
+<div class="cards-row cards-4" style="margin-bottom:14px;">
+<div class="card card-dark">
+<div class="card-label">Total Views</div>
+<div class="card-value">~276.5k</div>
+<div class="card-sub">Apr: ~249.8k · <span class="delta-up">▲ +10.7%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Total Reach</div>
+<div class="card-value">~162.1k</div>
+<div class="card-sub">Apr: ~120.4k · <span class="delta-up">▲ +34.6%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Total Likes</div>
+<div class="card-value">~1,069</div>
+<div class="card-sub">Apr: ~954 · <span class="delta-up">▲ +12.1%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Total Shares</div>
+<div class="card-value">~115</div>
+<div class="card-sub">Apr: ~45 · <span class="delta-up">▲ +156%</span></div>
+</div>
+</div>
+<div class="split-row">
+<div>
+<div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Top Posts</div>
+<div class="top-post">
+<div class="top-post-cap">🖼️ "Save this post to recreate this look" — Architectural Digest inspo (May 10)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>57,679</span></div><div class="tpm">REACH <span>29,802</span></div><div class="tpm">LIKES <span>254</span></div><div class="tpm">SHARES <span>28</span></div></div>
+</div>
+<div class="top-post">
+<div class="top-post-cap">🏠 "What do you think of Kate Hudson's kitchen?" — Arch Digest (May 13)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>42,240</span></div><div class="tpm">REACH <span>20,422</span></div><div class="tpm">LIKES <span>105</span></div><div class="tpm">SHARES <span>10</span></div></div>
+</div>
+<div class="top-post">
+<div class="top-post-cap">🎽 Belfast Marathon — relay teams &amp; Evora Hospice fundraiser (May 5)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>24,449</span></div><div class="tpm">REACH <span>12,739</span></div><div class="tpm">LIKES <span>70</span></div><div class="tpm">SHARES <span>2</span></div></div>
+</div>
+<div class="top-post">
+<div class="top-post-cap">🎨 "Which colour combo are you choosing this year?" (May 11)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>23,760</span></div><div class="tpm">REACH <span>12,699</span></div><div class="tpm">LIKES <span>103</span></div><div class="tpm">SHARES <span>20</span></div></div>
+</div>
+</div>
+<div>
+<div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Content Observations</div>
+<div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">
+<p style="margin-bottom:8px;">📌 <strong>Curated inspo content outperformed original content</strong> — both top posts used external imagery (Architectural Digest). The Arch Digest post generated 57.7k views with 254 likes and 28 shares, the highest engagement of the month.</p>
+<p style="margin-bottom:8px;">📌 <strong>Shares jumped significantly</strong> — 115 total vs 45 in April (+156%), driven largely by the inspo and colour content. Save/share content strategy is gaining traction.</p>
+<p style="margin-bottom:8px;">📌 <strong>Sample Sale posts</strong> (May 24 and 27) performed modestly for an event-driven post — the May 27 reminder did better at 8k views. Could be worth more build-up next year.</p>
+<p>📌 <strong>Belfast Marathon</strong> performed well organically (24.4k views) — consistent with the April pattern where brand/culture content outperforms pure product posts.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- FACEBOOK -->
+<div style="margin-bottom:14px;">
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>Facebook — 33 posts</h3>
+<span class="pill pill-red">▼ −65% views MoM</span>
+</div>
+<div class="wide-card-body">
+<div class="cards-row cards-4" style="margin-bottom:14px;">
+<div class="card card-dark">
+<div class="card-label">Total Views</div>
+<div class="card-value">~43.8k</div>
+<div class="card-sub">Apr: ~125.6k · <span class="delta-dn">▼ −65%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Total Reach</div>
+<div class="card-value">~34.9k</div>
+<div class="card-sub">Apr: ~118.6k · <span class="delta-dn">▼ −71%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Total Likes</div>
+<div class="card-value">~84</div>
+<div class="card-sub">Apr: ~161 · <span class="delta-dn">▼ −48%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Top Post</div>
+<div class="card-value">5.7k</div>
+<div class="card-sub">Marathon post · Apr high was 58k</div>
+</div>
+</div>
+<div class="split-row">
+<div>
+<div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Top Posts</div>
+<div class="top-post">
+<div class="top-post-cap">🏃 Belfast Marathon relay teams + Evora Hospice (May 5)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>5,737</span></div><div class="tpm">REACH <span>4,859</span></div><div class="tpm">LIKES <span>19</span></div></div>
+</div>
+<div class="top-post">
+<div class="top-post-cap">📸 Headshot day — meet the team reel (May 8)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>2,060</span></div><div class="tpm">REACH <span>1,815</span></div><div class="tpm">LIKES <span>8</span></div></div>
+</div>
+<div class="top-post">
+<div class="top-post-cap">😂 "Chaos seems to follow us" — brand personality reel (May 22)</div>
+<div class="top-post-mets"><div class="tpm">VIEWS <span>1,892</span></div><div class="tpm">REACH <span>1,769</span></div><div class="tpm">LIKES <span>7</span></div></div>
+</div>
+</div>
+<div>
+<div style="font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Key Context</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- TIKTOK -->
+<div class="wide-card">
+<div class="wide-card-header">
+<h3>TikTok — 13 posts · New to reporting</h3>
+<span class="pill pill-neutral" style="background:rgba(255,255,255,.15);">First month tracked</span>
+</div>
+<div class="wide-card-body">
+<div class="cards-row cards-4" style="margin-bottom:14px;">
+<div class="card card-dark">
+<div class="card-label">Total Views</div>
+<div class="card-value">~12.7k</div>
+<div class="card-sub">Opening benchmark</div>
+</div>
+<div class="card">
+<div class="card-label">Total Reach</div>
+<div class="card-value">~10.3k</div>
+<div class="card-sub">Avg 793 per post</div>
+</div>
+<div class="card">
+<div class="card-label">Total Likes</div>
+<div class="card-value">~248</div>
+<div class="card-sub">Avg 19 per post</div>
+</div>
+<div class="card">
+<div class="card-label">Top Post</div>
+<div class="card-value">1,869</div>
+<div class="card-sub">"Exciting content coming soon" — May 13</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<!-- PINTEREST -->
+<div class="section">
+<div class="section-title">Pinterest Organic — May 2026</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;">
+<div class="card">
+<div class="card-label">Impressions</div>
+<div class="card-value">522.8k</div>
+<div class="card-sub"><span class="delta-dn">▼ −32%</span> vs prior period  ·  Apr: 712.8k <span class="delta-dn">▼ −26.6%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Engagements</div>
+<div class="card-value">9.12k</div>
+<div class="card-sub"><span class="delta-dn">▼ −14%</span> vs prior period  ·  Apr: 9.71k <span class="delta-dn">▼ −6.1%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Outbound Clicks</div>
+<div class="card-value">593</div>
+<div class="card-sub"><span class="delta-dn">▼ −22%</span> vs prior period  ·  Apr: 693 <span class="delta-dn">▼ −14.4%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Saves</div>
+<div class="card-value">918</div>
+<div class="card-sub"><span class="delta-dn">▼ −3.9%</span> vs prior period  ·  Apr: 872 <span class="delta-up">▲ +5.3%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Total Audience</div>
+<div class="card-value">388.2k</div>
+<div class="card-sub"><span class="delta-dn">▼ −27%</span> vs prior period  ·  Apr: 496.1k <span class="delta-dn">▼ −21.8%</span></div>
+</div>
+<div class="card">
+<div class="card-label">Engaged Audience</div>
+<div class="card-value">6.94k</div>
+<div class="card-sub"><span class="delta-dn">▼ −13%</span> vs prior period  ·  Apr: 7.33k <span class="delta-dn">▼ −5.3%</span></div>
+</div>
+</div>
+
+</div>
+</div>
+<div class="report-footer">kukoon rugs · digital performance · may 2026 · internal use only</div>
+</div>
+<!-- COMMERCIAL PANE -->
+<div class="pane" id="com-pane">
+<div class="header">
+<div class="header-left">
+<div class="eyebrow">Kukoon Rugs · All-Channel Commercial Report</div>
+<h1>May 2026</h1>
+<div class="desc">Revenue across Website · Online Retailers · Marketplaces · Stores · Retail Partnerships</div>
+</div>
+<div class="header-right">
+<strong>Source: Daily Sales Figures Recording</strong>
+    01 May – 31 May 2026 · 31 days<br/>
+    Targets: FY26/27 Budget (Monthly)
+  </div>
+</div>
+<div class="body">
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+<div class="kpi primary">
+<div class="kpi-lbl">Total Revenue — All Channels</div>
+<div class="kpi-val">£1,777,559</div>
+<div class="kpi-sub">May 2026 · 31 days</div>
+</div>
+<div class="kpi missed">
+<div class="kpi-lbl">vs May 2026 Target</div>
+<div class="kpi-val" style="font-size:22px;">−£228,672</div>
+<div class="kpi-sub">Target £2,006,231 · <strong style="font-weight:700;">−11.4%</strong></div>
+</div>
+<div class="kpi">
+<div class="kpi-lbl">vs April 2026 (MoM)</div>
+<div class="kpi-val" style="font-size:22px;"><span class="dn">−£104,653</span></div>
+<div class="kpi-sub">April: £1,882,212 · <span class="dn">−5.6%</span></div>
+</div>
+<div class="kpi">
+<div class="kpi-lbl">vs May 2025 (YoY)</div>
+<div class="kpi-val" style="font-size:22px;"><span class="up">+£280,754</span></div>
+<div class="kpi-sub">May 2025: £1,496,805 · <span class="up">+18.7%</span></div>
+</div>
+</div>
+<!-- TARGET PERFORMANCE -->
+<div class="section">
+<div class="section-title">Target Performance — May 2026</div>
+<div class="tgt-strip">
+<div class="tgt-card miss">
+<div class="tgt-channel">Website</div>
+<div class="tgt-actual">£1,129,615</div>
+<div class="tgt-target">Target: £1,249,920</div>
+<div class="tgt-pct dn">▼ −£120,305 (−9.6%)</div>
+<div class="tgt-bar-wrap"><div class="tgt-bar-fill" style="width:90.4%;background:var(--red);opacity:0.7;"></div></div>
+</div>
+<div class="tgt-card miss">
+<div class="tgt-channel">Online Retailers</div>
+<div class="tgt-actual">£254,060</div>
+<div class="tgt-target">Target: £319,000</div>
+<div class="tgt-pct dn">▼ −£64,940 (−20.4%)</div>
+<div class="tgt-bar-wrap"><div class="tgt-bar-fill" style="width:79.6%;background:var(--red);opacity:0.7;"></div></div>
+</div>
+<div class="tgt-card miss">
+<div class="tgt-channel">Marketplaces</div>
+<div class="tgt-actual">£233,225</div>
+<div class="tgt-target">Target: £262,500</div>
+<div class="tgt-pct dn">▼ −£29,275 (−11.2%)</div>
+<div class="tgt-bar-wrap"><div class="tgt-bar-fill" style="width:88.8%;background:var(--red);opacity:0.7;"></div></div>
+</div>
+<div class="tgt-card beat">
+<div class="tgt-channel">Physical Retail</div>
+<div class="tgt-actual">£94,827</div>
+<div class="tgt-target">Target: £82,395</div>
+<div class="tgt-pct up">▲ +£12,432 (+15.1%)</div>
+<div class="tgt-bar-wrap"><div class="tgt-bar-fill" style="width:100%;background:var(--green);"></div></div>
+</div>
+<div class="tgt-card miss">
+<div class="tgt-channel">Retail Partnerships</div>
+<div class="tgt-actual">£65,832</div>
+<div class="tgt-target">Target: £92,416</div>
+<div class="tgt-pct dn">▼ −£26,584 (−28.8%)</div>
+<div class="tgt-bar-wrap"><div class="tgt-bar-fill" style="width:71.2%;background:var(--red);opacity:0.7;"></div></div>
+</div>
+<div class="tgt-card miss" style="border-top-color:#555;">
+<div class="tgt-channel">All Channels</div>
+<div class="tgt-actual">£1,777,559</div>
+<div class="tgt-target">Target: £2,006,231</div>
+<div class="tgt-pct dn">▼ −£228,672 (−11.4%)</div>
+<div class="tgt-bar-wrap"><div class="tgt-bar-fill" style="width:88.6%;background:#888;"></div></div>
+</div>
+</div>
+
+</div>
+<!-- ACTUALS vs TARGET TABLE -->
+<div class="section">
+<div class="section-title">Actuals vs Budget — May 2026</div>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>May 2026 Actual</th>
+<th>May 2026 Target</th>
+<th>Variance £</th>
+<th>Variance %</th>
+<th>% of Revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr class="sub-row">
+<td>↳ Website (kukoonrugs.com)</td>
+<td>£1,129,615</td>
+<td>£1,249,920</td>
+<td class="dn">−£120,305</td>
+<td><span class="tag dn">−9.6%</span></td>
+<td>63.5%</td>
+</tr>
+<tr class="sub-row">
+<td>↳ Online Retailers (B&amp;Q, Tesco, Range etc.)</td>
+<td>£254,060</td>
+<td>£319,000</td>
+<td class="dn">−£64,940</td>
+<td><span class="tag dn">−20.4%</span></td>
+<td>14.3%</td>
+</tr>
+<tr class="sub-row">
+<td>↳ Marketplaces (Amazon, eBay, Wayfair)</td>
+<td>£233,225</td>
+<td>£262,500</td>
+<td class="dn">−£29,275</td>
+<td><span class="tag dn">−11.2%</span></td>
+<td>13.1%</td>
+</tr>
+<tr class="ecomm-row">
+<td>Online / Ecommerce Subtotal</td>
+<td>£1,616,900</td>
+<td>£1,831,420</td>
+<td class="dn">−£214,520</td>
+<td><span class="tag dn">−11.7%</span></td>
+<td>91.0%</td>
+</tr>
+<tr>
+<td>Physical Retail (Belfast + Newry)</td>
+<td>£94,827</td>
+<td>£82,395</td>
+<td class="up">+£12,432</td>
+<td><span class="tag up">+15.1% ✓</span></td>
+<td>5.3%</td>
+</tr>
+<tr>
+<td>Retail Partnerships (EZLI + Woodie's)</td>
+<td>£65,832</td>
+<td>£92,416</td>
+<td class="dn">−£26,584</td>
+<td><span class="tag dn">−28.8%</span></td>
+<td>3.7%</td>
+</tr>
+<tr class="total-row">
+<td>TOTAL — All Channels</td>
+<td>£1,777,559</td>
+<td>£2,006,231</td>
+<td class="dn">−£228,672</td>
+<td><span class="tag dn">−11.4%</span></td>
+<td>100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- MOM / YOY TABLE -->
+<div class="section">
+<div class="section-title">Period Comparisons — MoM &amp; YoY</div>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>May 2026</th>
+<th>April 2026</th>
+<th>MoM Δ</th>
+<th>May 2025</th>
+<th>YoY Δ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="sub-row">
+<td>↳ Website (kukoonrugs.com)</td>
+<td>£1,129,615</td>
+<td>£1,221,009</td>
+<td><span class="tag dn">−7.5%</span></td>
+<td>£741,560</td>
+<td><span class="tag up">+52.3%</span></td>
+</tr>
+<tr class="sub-row">
+<td>↳ Online Retailers (B&amp;Q, Tesco, Range etc.)</td>
+<td>£254,060</td>
+<td>£270,778</td>
+<td><span class="tag dn">−6.2%</span></td>
+<td>£308,581</td>
+<td><span class="tag dn">−17.7%</span></td>
+</tr>
+<tr class="sub-row">
+<td>↳ Marketplaces (Amazon, eBay, Wayfair)</td>
+<td>£233,225</td>
+<td>£247,336</td>
+<td><span class="tag dn">−5.7%</span></td>
+<td>£331,760</td>
+<td><span class="tag dn">−29.7%</span></td>
+</tr>
+<tr class="ecomm-row">
+<td>Online / Ecommerce Subtotal</td>
+<td>£1,616,900</td>
+<td>£1,739,123</td>
+<td><span class="tag dn">−7.0%</span></td>
+<td>£1,381,901</td>
+<td><span class="tag up">+17.0%</span></td>
+</tr>
+<tr>
+<td>Physical Retail (Belfast + Newry)</td>
+<td>£94,827</td>
+<td>£85,844</td>
+<td><span class="tag up">+10.5%</span></td>
+<td>£74,756</td>
+<td><span class="tag up">+26.8%</span></td>
+</tr>
+<tr>
+<td>Retail Partnerships (EZLI + Woodie's)</td>
+<td>£65,832</td>
+<td>£57,245</td>
+<td><span class="tag up">+15.0%</span></td>
+<td>£40,148</td>
+<td><span class="tag up">+63.9%</span></td>
+</tr>
+<tr class="total-row">
+<td>TOTAL — All Channels</td>
+<td>£1,777,559</td>
+<td>£1,882,212</td>
+<td><span class="tag dn">−5.6%</span></td>
+<td>£1,496,805</td>
+<td><span class="tag up">+18.7%</span></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<!-- DAILY CHART -->
+<div class="section">
+<div class="section-title">Daily Revenue — May 2026 vs May 2025 (All Channels)</div>
+<div class="chart-box">
+<canvas height="85" id="dailyChart"></canvas>
+</div>
+</div>
+<!-- STORES + RP -->
+<div class="section">
+<div class="section-title">Physical Retail &amp; Partnerships</div>
+<div class="store-grid">
+<div class="store-card" style="border-top:3px solid var(--green);">
+<div class="store-lbl">Belfast Store</div>
+<div class="store-val">£73,317</div>
+<div class="store-sub">77.3% of physical retail</div>
+</div>
+<div class="store-card" style="border-top:3px solid var(--green);">
+<div class="store-lbl">Newry Store</div>
+<div class="store-val">£21,510</div>
+<div class="store-sub">22.7% of physical retail</div>
+</div>
+<div class="store-card">
+<div class="store-lbl">Retail Partnerships (EZLI + Woodie's)</div>
+<div class="store-val">£65,832</div>
+<div class="store-sub">Target £92,416  ·  <span class="dn">−28.8%</span></div>
+</div>
+</div>
+<div style="margin-top:14px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:12px;">
+<div><div style="color:var(--muted);margin-bottom:3px;">Stores Combined</div><div style="font-weight:700;font-size:15px;">£94,827</div></div>
+<div><div style="color:var(--muted);margin-bottom:3px;">vs Target</div><div class="up" style="font-weight:700;">+£12,432 (+15.1%) ✓</div></div>
+<div><div style="color:var(--muted);margin-bottom:3px;">vs April 2026</div><div class="up" style="font-weight:700;">+£8,983 (+10.5%)</div></div>
+<div><div style="color:var(--muted);margin-bottom:3px;">vs May 2025</div><div class="up" style="font-weight:700;">+£20,071 (+26.8%)</div></div>
+</div>
+</div>
+</div>
+<!-- INSIGHTS -->
+
+<div class="footer">
+    Kukoon Rugs — Confidential  |  May 2026 All-Channel Commercial Report  |  Daily Sales Figures Recording + FY26/27 Budget
+  </div>
+</div>
+<script>
+const days = Array.from({length:31},(_,i)=>i+1);
+const may26 = [55871,68884,71907,80843,53307,54347,52362,46726,54173,67815,
+               61631,50318,52198,57642,92507,54172,72458,61434,60676,45603,
+               48027,47447,56488,44724,51978,41522,40104,52595,51125,62319,66352];
+const may25 = [40647,42138,43025,48902,52297,49893,43703,42622,37281,39275,
+               46985,47099,39115,41731,39129,38912,37433,40074,40312,38766,
+               45449,39514,39156,50067,62243,68851,51004,55606,98934,62405,74235];
+const target = Array(31).fill(64717);
+
+const ctx = document.getElementById('dailyChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      { label:'May 2026', data:may26, backgroundColor:'rgba(94,138,150,0.85)', borderRadius:3, order:1 },
+      { label:'May 2025', data:may25, backgroundColor:'rgba(94,138,150,0.18)', borderColor:'rgba(94,138,150,0.4)', borderWidth:1, borderRadius:3, order:2 },
+      { label:'Daily Target', data:target, type:'line', borderColor:'rgba(184,50,50,0.7)', borderWidth:1.5, borderDash:[5,4], pointRadius:0, fill:false, order:0 }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode:'index' },
+    plugins: {
+      legend: { position:'top', labels:{ font:{family:'Work Sans',size:11}, color:'#2B3A42', boxWidth:12, padding:14 } },
+      tooltip: { callbacks:{ label: c => ` ${c.dataset.label}: £${c.raw.toLocaleString('en-GB')}` } }
+    },
+    scales: {
+      x: { grid:{display:false}, ticks:{font:{family:'Work Sans',size:10},color:'#7090a0'}, title:{display:true,text:'Day of month',font:{family:'Work Sans',size:10},color:'#7090a0'} },
+      y: { ticks:{font:{family:'Work Sans',size:10},color:'#7090a0',callback:v=>'£'+(v/1000).toFixed(0)+'k'}, grid:{color:'#dce8eb'} }
+    }
+  }
+});
+</script>
+</div>
+<script>
+let comChartInit = false;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(tab + '-pane').classList.add('active');
+  
+  if (tab === 'com' && !comChartInit) {
+    comChartInit = true;
+    setTimeout(initComChart, 50);
+  }
+}
+
+function initComChart() {
+  
+const days = Array.from({length:31},(_,i)=>i+1);
+const may26 = [55871,68884,71907,80843,53307,54347,52362,46726,54173,67815,
+               61631,50318,52198,57642,92507,54172,72458,61434,60676,45603,
+               48027,47447,56488,44724,51978,41522,40104,52595,51125,62319,66352];
+const may25 = [40647,42138,43025,48902,52297,49893,43703,42622,37281,39275,
+               46985,47099,39115,41731,39129,38912,37433,40074,40312,38766,
+               45449,39514,39156,50067,62243,68851,51004,55606,98934,62405,74235];
+const target = Array(31).fill(64717);
+
+const ctx = document.getElementById('dailyChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: days,
+    datasets: [
+      { label:'May 2026', data:may26, backgroundColor:'rgba(94,138,150,0.85)', borderRadius:3, order:1 },
+      { label:'May 2025', data:may25, backgroundColor:'rgba(94,138,150,0.18)', borderColor:'rgba(94,138,150,0.4)', borderWidth:1, borderRadius:3, order:2 },
+      { label:'Daily Target', data:target, type:'line', borderColor:'rgba(184,50,50,0.7)', borderWidth:1.5, borderDash:[5,4], pointRadius:0, fill:false, order:0 }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { mode:'index' },
+    plugins: {
+      legend: { position:'top', labels:{ font:{family:'Work Sans',size:11}, color:'#2B3A42', boxWidth:12, padding:14 } },
+      tooltip: { callbacks:{ label: c => ` ${c.dataset.label}: £${c.raw.toLocaleString('en-GB')}` } }
+    },
+    scales: {
+      x: { grid:{display:false}, ticks:{font:{family:'Work Sans',size:10},color:'#7090a0'}, title:{display:true,text:'Day of month',font:{family:'Work Sans',size:10},color:'#7090a0'} },
+      y: { ticks:{font:{family:'Work Sans',size:10},color:'#7090a0',callback:v=>'£'+(v/1000).toFixed(0)+'k'}, grid:{color:'#dce8eb'} }
+    }
+  }
+});
+
+}
+</script>
+</body>
+</html>
